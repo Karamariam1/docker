@@ -1,0 +1,559 @@
+--------------------------dockerfile----
+
+# Utilisation de l'image Python 2.7
+FROM python:2.7
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers nécessaires dans le conteneur
+COPY . /app
+
+# Installer les dépendances
+RUN pip install -r requirements.txt
+
+# Définir les variables d'environnement
+ENV API_BACKEND_URL=http://api-backend
+ENV API_BACKEND_PORT=8001
+
+# Exposer le port sur lequel l'API Frontend sera accessible
+EXPOSE 8000
+
+# Commande pour démarrer l'API Frontend avec Flask
+CMD ["python", "api.py"]
+
+
+
+---------------------------yaml---------
+version: '3'
+
+services:
+  api-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: api-backend
+    ports:
+      - "8001:8001"
+    restart: always
+
+  api-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: api-frontend
+    ports:
+      - "8000:8000"
+    environment:
+      - API_BACKEND_URL=http://api-backend
+      - API_BACKEND_PORT=8001
+    depends_on:
+      - api-backend
+    restart: always
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------
+
+docker version
+
+docker run hello-world (hello-world le nom de l'image) 
+docker run -it ubuntu bash (-it : pour interagir avec le conteneur)
+
+----------Affichez la liste des conteneurs en train de fonctionner:
+docker ps
+----y compris ceux qui sont arrêtés
+docker ps -a
+
+
+----------rentrer dans le conteneur en ligne de commande
+docker exec -it <id_du_conteneur> /bin/bash
+
+----------Créer un fichier dans la machine:
+touch fichier_test
+
+----------Monter un dossier:
+docker run -v %cd%:/mnt/ -it ubuntu bash 
+# Monte le dossier courant dans le /mnt du Docker.
+
+----------Monter un fichier:
+docker run -v %cd%/mon_fichier:/mnt/mon_fichier -it ubuntu bash
+
+----------Builder votre image
+docker build --tag "docker-hello:latest" .
+
+----------Ajout des sources dans l’image
+COPY permet de copier des fichiers (dossiers, fichiers, etc.) directement dans l’image qui sera construite.
+COPY src/ /var/www/html/
+
+----------Build de l’image
+docker build --tag "php-todo:latest" . 
+(« . » indique que le fichier Dockerfile est dans le dossier courant)
+
+----------Lancer votre application
+docker run -p 8888:80 php-todo:latest
+
+-------------------------------
+Docker compose permet de créer une architecture multiconteneur que l’on peut appeler « stack ». 
+
+-----------------Démarrer un service dans dockercompose.yml :
+docker compose up
+
+-----------------Lancer les conteneurs en arrière-plan :en mode détaché (background).
+docker-compose up -d
+
+-----------------Mettre à jour votre site
+docker compose up --build -d
+
+
+
+1. Qu’est-ce que Docker ?
+Docker est une plateforme open-source qui permet de développer, déployer et exécuter des applications dans des conteneurs.
+
+2. Qu’est-ce qu’un Conteneur Docker ?
+Une technologie qui offre une solution de packaging pour une application et ces dépendances 
+Conteneurs : Les instances des images Docker en cours d'exécution.
+
+3. Qu’est-ce qu’une image Docker ?
+une modèle de conteneurs qui incluent tout ce qui est nécessaire pour exécuter une application.
+
+4. Qu’est-ce qu’un DockerFile ?
+Un fichier qui contient une suite d’instruction pour construire une image
+
+7. Quelle syntaxe peut-on utiliser pour convertir un fichier Docker (Dockerfile) en image ?
+B docker build -t <image_name>:<tag_name>
+
+12. Le registre Docker est un endroit où l’on peut stocker et distribuer des ________Docker.
+B images
+
+13. Quel est le but d’une image ?
+C Fournir le système de fichiers pour une application.
+
+14. Laquelle des affirmations suivantes est vraie à propos de l’architecture de Docker ?
+A L’architecture est de type client-serveur.
+B Les conteneurs Docker sont exécutés en tant que root.
+C Le démon doit être exécuté en tant que root.
+
+15. Sur quels concepts de base Docker repose-t-il ?
+A Images et conteneurs
+
+16. Cette commande upload votre image locale dans votre registre Docker ?
+A docker push
+
+18. Lequel des éléments suivants n’est pas une directive Dockerfile recommandée ?
+A MAINTAINER
+
+19. Laquelle des interfaces réseau suivantes est créée lorsque vous installez le runtime Docker sur l’hôte Docker ?
+B Docker0
+
+20.Lequel des éléments suivants n’est pas un composant de l’architecture Docker ?
+D Docker Machine
+
+21. Comment mettre à jour un service ?
+B docker service update --image <imgName> <srvName>
+
+22.Cette commande prend un snapshot de votre conteneur Docker actuel et le place dans une nouvelle image.
+C docker commit
+
+23.Quelle commande Docker utilisez-vous pour créer et exécuter un conteneur ?
+B docker run
+
+25.En utilisant la commande suivant pour supprimer tous les conteneurs qui se sont arrêtés:
+A docker prune
+B docker rm -f
+C docker rmi
+---D Aucune de ces réponses
+
+26.Quelle commande vous permet d’accéder en direct à l’entrée, sortie et l’erreur standard de votre terminal des processus exécutés dans un conteneur ?
+A docker attach
+
+27.Quel format Docker utilise-t-il pour exporter les images ?
+B tar
+
+28.Laquelle des propositions suivantes décrit le mieux une image Docker ?
+A Une template en lecture seule pour démarrer un ou plusieurs conteneurs.
+
+29.Laquelle des commandes Docker suivantes permet de créer une image de conteneur à l’aide des instructions contenues dans un Dockerfile ?
+B docker image build
+
+31. La commande utilisée pour trouver une image dans le registre docker est ______
+B docker search
+
+32.Quelle commande permet de mapper le port 80 du conteneur au port 2023 de l’hôte Docker ?
+A docker run -p 2023:80
+
+33. La commande docker history affiche un résultat similaire à lequel des éléments suivants ?
+C Dockerfile
+
+34.Quelles commandes Docker peuvent être utilisées dans une séquence pour créer une image Docker ?
+B docker container run, et docker image commit
+
+35.Comment trouver l’emplacement des métadonnées du conteneur à l’aide des commandes Docker ?
+B docker inspect
+
+36.A quoi sert la commande docker exec ?
+B Vous permet d’exécuter des processus dans un conteneur.
+
+37.Quel option peut être utilisé pour définir un Dockerfile personnalisé (tel que mydockerfile.node) lors de la création d’une image personnalisée ?
+C -f
+
+38.Commande pour créer un cluster dans Docker ?
+B docker swarm
+
+39.Quelle commande est utilisée pour arrêter un conteneur en cours d’exécution ?
+A docker stop <container_id>
+
+40.Quelle commande est utilisée pour exécuter des images en tant que conteneur ?
+B sudo docker run -i -t alpine /bin/bash
+
+41. Quel service de Docker hébergé dans le nuage offre des capacités de registre pour le contenu public et privé ?
+D Docker Hub
+
+42.Qu’est-ce qui est utilisé pour convertir un groupe d’hôtes Docker en un seul hôte Docker virtuel 
+C Docker Swarm
+
+43.Quel est la template utilisé pour décrire le build d’une image ?
+C DockerFile
+
+44.Plusieurs conteneurs fonctionnant sur une seule machine partagent tous les mêmes ressources (CPU, RAM, etc…)
+A Vrai
+
+45.Quelle est l’adresse IP par défaut de l’hôte Docker ?
+B 172.17.0.0/16
+
+46.Quelle commande est utilisée pour aller à l’intérieur d’un conteneur en cours d’exécution ?
+B docker exec -it <container_id> sh
+
+47.Quelle commande est utilisée pour supprimer tous les conteneurs arrêtés, les réseaux inutilisés, les caches de build et les images en suspens ?
+C docker system prune
+
+48.Que pouvez-vous dire sur Docker Compose ?
+un outil permettant de définir et d'exécuter des applications multi-conteneurs en utilisant un fichier de configuration YAML
+
+49.Dans quelles conditions perdez-vous les données stockées dans un conteneur ?
+lorsque le conteneur est supprimé
+
+50.Qu’est-ce qu’un Docker Hub ?
+un registre public ou privé où vous pouvez stocker et partager des images Docker.
+
+51. Quelle commande peut-on exécuter pour exporter une image docker sous forme d’archive ?
+docker save -o <archive_name.tar> <image_name>
+
+52.Quelle commande peut-on exécuter pour importer une image Docker préexportée dans un autre hôte Docker ?
+docker load -i <archive_name.tar>
+
+53.Un conteneur en pause peut-il être supprimé de Docker ?
+Oui, un conteneur en pause peut être supprimé avec la commande docker rm.
+
+54. Quelle commande est utilisée pour vérifier la version du client et du serveur docker ?
+docker version
+
+55.Où les volumes de Docker sont-ils stockés dans Docker ?
+Ils sont stockés dans le répertoire /var/lib/docker/volumes sur l'hôte Docker.
+
+56.Que fait la commande « docker info » ?
+affiche des informations détaillées sur l’état du système Docker
+
+57.Pouvez-vous indiquer la démarche à suivre pour se connecter au registre docker?
+Utilisez docker login pour vous connecter avec vos identifiants Docker Hub.
+
+58.Quelle est la méthode pour établir la communication entre l’hôte Docker et l’hôte Linux ?
+Ils communiquent via des interfaces réseau et des protocoles comme TCP/IP ou Unix socket.
+
+59.Quelle est la meilleure façon pour supprimer un conteneur ?
+docker rm -f <container_id>
+
+60.Peut-on utiliser JSON au lieu de YAML lors du développement du fichier dockercompose dans Docker ?
+Oui, Docker Compose prend en charge le format JSON, mais YAML est plus couramment utilisé car il est plus lisible.
+
+61. Combien de conteneurs pouvez-vous exécuter dans Docker et quels sont les facteurs qui influencent cette limite ?
+Le nombre de conteneurs dépend des ressources du système (CPU, RAM, stockage) et de la configuration Docker.
+
+
+
+
+
+
+
+-------------------Gestion des Conteneurs
+--Créer et exécuter un conteneur :
+docker run -it <image_name>
+docker run -d --name <container_name> -p <host_port>:<container_port> <image_name>
+--Lister les conteneurs :
+docker ps (conteneurs actifs)
+docker ps -a (tous les conteneurs)
+--Démarrer un conteneur arrêté :
+docker start <container_id>
+--Arrêter un conteneur actif :
+docker stop <container_id>
+--Supprimer un conteneur :
+docker rm <container_id>
+docker rm -f <container_id> (forcer la suppression)
+--Entrer dans un conteneur actif :
+docker exec -it <container_id> bash
+--Attacher au terminal d’un conteneur :
+docker attach <container_id>
+--Afficher les logs d’un conteneur :
+docker logs <container_id>
+
+----------------Gestion des Images
+-Lister les images locales :
+docker images
+--Télécharger une image :
+docker pull <image_name>
+--Créer une image depuis un Dockerfile :
+docker build -t <image_name> .
+--Supprimer une image :
+docker rmi <image_id>
+--Exporter une image en archive :
+docker save -o <archive_name.tar> <image_name>
+--Importer une image depuis une archive :
+docker load -i <archive_name.tar>
+--Afficher l’historique d’une image :
+docker history <image_name>
+
+--------------Volumes et Réseaux
+--Lister les volumes :
+docker volume ls
+--Créer un volume :
+docker volume create <volume_name>
+--Supprimer un volume :
+docker volume rm <volume_name>
+--Lister les réseaux Docker :
+docker network ls
+--Créer un réseau :
+docker network create <network_name>
+--Supprimer un réseau :
+docker network rm <network_name>
+--Connecter un conteneur à un réseau :
+docker network connect <network_name> <container_id>
+
+------------Nettoyage
+--Supprimer tous les conteneurs arrêtés, images inutilisées et réseaux orphelins :
+docker system prune
+--Supprimer tous les conteneurs :
+docker rm $(docker ps -a -q)
+--Supprimer toutes les images :
+docker rmi $(docker images -q)
+
+----------------Informations et Débogage
+--Afficher les informations du système Docker :
+docker info
+--Inspecter un conteneur ou une image :
+docker inspect <container_id> ou docker inspect <image_name>
+--Vérifier la version de Docker :
+docker version
+
+------------------Docker Compose
+--Démarrer un service défini dans docker-compose.yml :
+docker-compose up
+--Arrêter un service :
+docker-compose down
+--Afficher les logs des services :
+docker-compose logs
+--Recréer les services sans cache :
+docker-compose up --build --no-cache
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------
+KUBERNeTES
+
+1. Introduction à Kubernetes
+Développé par Google et open-source depuis 2014.
+Premier projet de la Cloud Native Computing Foundation (CNCF).
+Adapté à tout type d’environnement, basé sur la gestion de conteneurs.
+
+2. Architecture et Composants
+
+Control Plane :
+etcd : Base de données clé/valeur stockant l'état du cluster.
+kube-apiserver : Point central pour l'administration du cluster via une API REST.
+kube-scheduler : Assigne les workloads aux nœuds.
+kube-controller-manager : Vérifie et maintient l’état du cluster.
+kube-proxy : Gère la connectivité réseau entre les Pods et l’extérieur.
+
+Composants des nœuds :
+kubelet : Agent supervisant l’exécution des conteneurs.
+kubectl : Interface en ligne de commande pour interagir avec le cluster.
+
+3. Objets Kubernetes
+Pods : Plus petite unité de déploiement, contenant un ou plusieurs conteneurs.
+Deployments : Gère la mise à jour et la scalabilité des Pods.
+DaemonSets : Exécute un Pod sur chaque nœud.
+StatefulSets : Gère des applications nécessitant un stockage persistant.
+Jobs et CronJobs : Exécute des tâches ponctuelles ou récurrentes.
+
+4. Gestion du Réseau
+Kubernetes n’intègre pas de solution réseau native.
+Plugins CNI (Container Network Interface) : Calico, Cilium, Weave.
+Services : Exposent les Pods via des adresses IP virtuelles.
+Ingress : Gère l’accès HTTP/HTTPS aux applications.
+
+5. Stockage et Configuration
+Volumes : Attache du stockage aux Pods.
+Persistent Volumes (PV) & Claims (PVC) : Gestion du stockage persistant.
+ConfigMaps & Secrets : Gèrent les configurations et les données sensibles.
+
+6. Gestion des Ressources et Scalabilité
+Requests & Limits : Allocation CPU/RAM aux conteneurs.
+Horizontal Pod Autoscaler (HPA) : Ajuste le nombre de Pods selon la charge.
+LimitRanges & ResourceQuotas : Gèrent les ressources dans un namespace.
+
+7. Sécurité et Contrôle d’Accès
+RBAC (Role-Based Access Control) : Gère les permissions des utilisateurs et services.
+NetworkPolicies : Contrôle la communication entre les Pods.
+PodSecurityPolicies : Restreint les permissions des Pods.
+
+8. Monitoring et Observabilité
+Sondes (Readiness & Liveness) : Vérifient l’état des applications.
+kubectl logs & describe : Analyse des événements et logs du cluster.
+
+9. Outils Complémentaires
+Helm : Gestionnaire de packages Kubernetes (équivalent d’APT/YUM).
+Service Mesh (Istio, Linkerd) : Gère la communication entre microservices.
+Kubernetes Dashboard : Interface web pour la gestion du cluster.
+
+10. Déploiement et Orchestration
+Déploiement possible sur :
+Bare Metal (serveurs physiques).
+Cloud Public/Privé (AWS, GCP, Azure).
+Solutions Managées (EKS, GKE, AKS).
+------------------------------------------------
+kubectl version
+--To check the status of Kubernetes:
+kubectl cluster-info
+
+--Create a StatefulSet:
+kubectl apply -f statefulset.yaml
+
+--List the StatefulSets:
+kubectl get statefulsets
+
+--Get details of a StatefulSet:
+kubectl describe statefulset <statefulset_name>
+
+--Get pods for a StatefulSet:
+kubectl get pods -l app=<app_name>
+
+--Create a PersistentVolume (PV) and PersistentVolumeClaim (PVC):
+kubectl apply -f pv.yaml
+kubectl apply -f pvc.yaml
+
+--Deploy MySQL and WordPress using StatefulSets:
+kubectl apply -f mysql-statefulset.yaml
+kubectl apply -f wordpress-statefulset.yaml
+
+--Check PVC status:
+kubectl get pvc
+
+--Describe PVC and PV for debugging:
+kubectl describe pvc <pvc_name>
+kubectl describe pv <pv_name>
+
+--Check Pods status:
+kubectl get pods
+
+--Get all namespaces:
+kubectl get namespaces
+
+--List all pods:
+kubectl get pods
+
+--Describe a pod:
+kubectl describe pod <pod_name>
+
+--Get logs of a pod:
+kubectl logs <pod_name>
+
+--Create resources from a YAML file:
+kubectl apply -f <file_name>.yaml
+
+--Delete a resource:
+kubectl delete -f <file_name>.yaml
+
+--Get services:
+kubectl get svc
+
+
+
+
+
+--Lister les ressources Kubernetes :
+kubectl get nodes      # Afficher les nœuds du cluster
+kubectl get pods       # Afficher les pods du namespace actuel
+kubectl get services   # Afficher les services disponibles
+kubectl get namespaces # Afficher les namespaces existants
+kubectl get deployments # Afficher les déploiements
+
+--Afficher les détails d’une ressource :
+kubectl describe node <NODE_NAME>  # Détails d’un nœud
+kubectl describe pod <POD_NAME>    # Détails d’un pod
+
+
+Création et gestion des objets Kubernetes
+--Créer un objet à partir d’un fichier YAML :
+kubectl create -f fichier.yaml
+
+--Supprimer un objet Kubernetes :
+kubectl delete -f fichier.yaml
+
+--Mettre à jour un objet Kubernetes :
+kubectl replace -f fichier.yaml
+
+
+Déploiement et scalabilité
+--Déployer un pod à partir d'une image Docker :
+kubectl run nginx --image=nginx
+
+--Augmenter le nombre de pods dans un déploiement
+kubectl scale --replicas=5 deployment nginx
+
+--Changer l’image d’un conteneur dans un déploiement :
+kubectl set image deployment nginx nginx=nginx:1.15
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
