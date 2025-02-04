@@ -1,0 +1,132 @@
+Dockerfile est un fichier txt qui contient une série d’instructions pour construire une image chaque instruction représente une étape de construction de l’image.
+
+Image Docker est un modèle en lecture seule qui contient tt ce que une application a besoin pour bien fonctionner et elle est utilisée pour créer des conteneurs 
+
+Un conteneur docker est une instance en exécutif créée d’une image docker . Il contient tt ce que une app a besoin pour fonctionner.
+
+Docker est une plateforme open source permet de developper et déployer et exécuter une application dans des conteneurs . 
+
+Docker hub est une plateforme pour le partage des images docker
+
+Docker compose est un outil qui permet de gérer une application avec multi conteneurs en utilisant file docker-compose.yml
+
+
+version: '3.8'
+
+services:
+  # Service de l'application Python (Flask)
+  app:
+    build: .
+    container_name: flask_app
+    restart: always
+    ports:
+      - "5000:5000"  # Accès à Flask via localhost:5000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: development
+      DATABASE_URL: postgresql://user:password@db:5432/mydatabase
+
+  # Service de la base de données PostgreSQL
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+Si mysql
+db:
+  image: mysql:8.0
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: mydatabase
+    MYSQL_USER: user
+    MYSQL_PASSWORD: password
+
+Exemple
+
+version: '3.8'
+
+services:
+  web:
+    build: ./app  # Construire à partir du Dockerfile dans le dossier "app"
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app:/usr/src/app
+    environment:
+      - ENV=production
+    depends_on:
+      - db
+    networks:
+      - webnet
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: mydatabase
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - webnet
+
+  redis:
+    image: redis:alpine
+    networks:
+      - webnet
+
+volumes:
+  db_data: {}  # Volume persistant pour la base de données
+
+networks:
+  webnet:  # Réseau Docker personnalisé
+    driver: bridge
+
+Exemple node
+version: '3.8'
+
+services:
+  # Frontend (React)
+  frontend:
+    build: ./frontend  # Dossier où se trouve le Dockerfile du frontend
+    container_name: frontend_app
+    ports:
+      - "3000:3000"  # Rediriger le port 3000 du conteneur vers 3000 sur l'hôte
+    volumes:
+      - ./frontend:/app
+    environment:
+      - REACT_APP_API_URL=http://backend:5000  # Variable pour l'API (backend)
+    depends_on:
+      - backend  # Attendre que le backend soit prêt
+    networks:
+      - app_network
+
+  # Backend (Node.js)
+  backend:
+    build: ./backend  # Dossier où se trouve le Dockerfile du backend
+    container_name: backend_api
+    ports:
+      - "5000:5000"  # Rediriger le port 5000 du conteneur vers 5000 sur l'hôte
+    volumes:
+      - ./backend:/app
+    environment:
+      - NODE_ENV=production  # Environnement de production pour le backend
+    networks:
+      - app_network
+
+networks:
+  app_network:  # Réseau personnalisé pour que le frontend et le backend communiquent
+    driver: bridge
