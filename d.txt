@@ -1,0 +1,63 @@
+ Docker
+
+#### 1. Concepts de base Docker
+- **Conteneurs vs Machines Virtuelles** : Les conteneurs partagent le noyau du système hôte tandis que les VMs ont leur propre OS.
+- **Architecture Docker** : Composée du client Docker, du daemon Docker et des images stockées sur Docker Hub.
+- **Images Docker vs Conteneurs** : Une image est un modèle statique, un conteneur est une instance en cours d'exécution d'une image.
+
+#### 2. Installation et Commandes de base
+- **Installation de Docker** : Disponible pour Linux, Windows et macOS.
+- **Commandes essentielles** :
+  - `docker pull <image>` : Récupérer une image.
+  - `docker run <image>` : Lancer un conteneur.
+  - `docker ps` : Voir les conteneurs actifs.
+  - `docker stop <container>` / `docker start <container>` : Gérer les conteneurs.
+  - `docker rm <container>` : Supprimer un conteneur.
+  - `docker rmi <image>` : Supprimer une image.
+
+#### 3. Gestion des images et conteneurs
+- **Création d’images avec Dockerfile**
+  - `FROM` : Définir l’image de base.
+  - `RUN` : Exécuter des commandes lors de la création de l’image.
+  - `CMD` / `ENTRYPOINT` : Définir la commande de lancement.
+  - `COPY` / `ADD` : Copier des fichiers dans l’image.
+  - `WORKDIR` : Définir le répertoire de travail.
+- **Gestion des conteneurs** :
+  - `docker logs <container>` : Afficher les logs.
+  - `docker exec -it <container> bash` : Exécuter une commande à l’intérieur.
+  - `docker inspect <container>` : Obtenir des informations détaillées.
+
+#### 4. Réseau et Volumes
+- **Types de réseaux** :
+  - `bridge` : Mode par défaut.
+  - `host` : Utilise le réseau de l’hôte.
+  - `overlay` : Réseau distribué pour Swarm.
+- **Gestion des volumes** :
+  - `docker volume create <nom>` : Créer un volume.
+  - `docker run -v <volume>:/app` : Monter un volume dans un conteneur.
+
+#### 5. Docker Compose
+- **Fichier docker-compose.yml**
+  ```yaml
+  version: "3"
+  services:
+    web:
+      image: nginx
+      ports:
+        - "80:80"
+  ```
+- **Commandes Docker Compose** :
+  - `docker-compose up -d` : Démarrer les services.
+  - `docker-compose down` : Arrêter les services.
+  - `docker-compose logs` : Voir les logs.
+
+#### 6. Optimisation et Déploiement
+- **Docker Registry et Docker Hub** :
+  - `docker push <image>` : Pousser une image.
+  - `docker pull <image>` : Télécharger une image.
+- **Multi-stage builds** : Réduction de la taille des images.
+- **Bonnes pratiques** :
+  - Utiliser `.dockerignore`.
+  - Ne pas exécuter en root.
+  - Garder les images légères.
+

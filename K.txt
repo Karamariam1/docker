@@ -1,0 +1,53 @@
+Kubernetes
+
+- Kubernetes est un orchestrateur de conteneurs open-source développé par Google.
+- Il permet de déployer, gérer et faire évoluer des applications conteneurisées automatiquement.
+
+#### 2. Architecture
+- **Control Plane (Plan de Contrôle)** :
+  - etcd : Base de données de stockage des informations du cluster.
+  - kube-apiserver : Interface REST qui gère les requêtes.
+  - kube-scheduler : Assigne les pods aux nœuds disponibles.
+  - kube-controller-manager : Maintient l'état désiré du cluster.
+  - kube-proxy : Gère le réseau et le routage des requêtes.
+
+- **Composants des Workers Nodes** :
+  - kubelet : S'assure que les pods sont en cours d'exécution.
+  - Container Runtime : Exécute les conteneurs (Docker, containerd...).
+  - kubectl : CLI pour interagir avec le cluster.
+
+#### 3. Objets Principaux
+- **Pods** : Un ou plusieurs conteneurs regroupés ensemble.
+- **Deployments** : Gère les réplicas et la mise à jour des pods.
+- **Services** : Expose des pods à l'intérieur ou l'extérieur du cluster.
+- **ConfigMaps & Secrets** : Stocke des configurations et données sensibles.
+- **Volumes & PersistentVolumes** : Gèrent le stockage des données persistantes.
+
+#### 4. Mise en Réseau
+- **ClusterIP** : Communication interne.
+- **NodePort** : Exposition du service sur un port statique du nœud.
+- **LoadBalancer** : Utilise un équilibrage de charge externe.
+- **Ingress** : Gère le routage HTTP/TLS vers les services.
+
+#### 5. Scalabilité et Gestion des Ressources
+- **HorizontalPodAutoscaler (HPA)** : Augmente ou diminue le nombre de pods.
+- **Requests & Limits** : Définit les ressources CPU et RAM allouées aux pods.
+- **ResourceQuotas** : Limite les ressources utilisées dans un namespace.
+
+#### 6. Sécurité
+- **RBAC (Role-Based Access Control)** : Gère les permissions des utilisateurs.
+- **PodSecurityPolicies** : Restriction des permissions des pods.
+- **NetworkPolicies** : Contrôle le trafic entre les pods.
+
+#### 7. Commandes Kubectl Essentielles
+- `kubectl get pods` : Liste les pods.
+- `kubectl describe pod <pod>` : Affiche les détails d'un pod.
+- `kubectl apply -f <fichier.yaml>` : Applique un fichier de configuration.
+- `kubectl delete pod <pod>` : Supprime un pod.
+- `kubectl logs <pod>` : Affiche les logs d'un pod.
+- `kubectl exec -it <pod> -- /bin/sh` : Accès à un conteneur en cours d'exécution.
+
+#### 8. Outils Complémentaires
+- **Helm** : Gestionnaire de packages Kubernetes.
+- **Prometheus & Grafana** : Monitoring et visualisation des performances.
+- **Terraform** : Gestion Infrastructure as Code pour déployer Kubernetes.
